@@ -4,7 +4,6 @@ import SummaryCards from "./_components/summary-cards";
 import TimeSelect from "./_components/time-select";
 import TransactionPieChart from "./_components/transactions-pie-chart";
 import { getDashboard } from "../_data/get-dashboard";
-import { isMatch } from "date-fns";
 
 interface HomeProps {
   searchParams: {
@@ -19,12 +18,9 @@ export default async function Home({ searchParams: { month } }: HomeProps) {
     redirect("/login");
   }
 
-  const monthIsInvalid = !month || !isMatch(month, "MM");
-  if (monthIsInvalid) {
-    redirect(`?month=${new Date().getMonth() + 1}`);
-  }
-
   const dashboard = await getDashboard(month);
+
+  console.log(dashboard);
 
   return (
     <>

@@ -8,9 +8,10 @@ export const getDashboard = async (month: string) => {
     throw new Error("Unauthorized");
   }
   const where = {
+    userId,
     date: {
-      gte: new Date(`2024-${month}-01`),
-      lt: new Date(`2024-${month}-31`),
+      gte: new Date(`2025-${month}-01`),
+      lt: new Date(`2025-${month}-31`),
     },
   };
 
@@ -22,6 +23,10 @@ export const getDashboard = async (month: string) => {
       })
     )?._sum?.amount,
   );
+
+  console.log("depositos: ", depositsTotal);
+  console.log("Onde: ", where);
+
   const investimentsTotal = Number(
     (
       await db.transaction.aggregate({
@@ -30,6 +35,7 @@ export const getDashboard = async (month: string) => {
       })
     )?._sum?.amount,
   );
+
   const expensesTotal = Number(
     (
       await db.transaction.aggregate({
@@ -38,12 +44,13 @@ export const getDashboard = async (month: string) => {
       })
     )?._sum?.amount,
   );
+
   const balance = Number(depositsTotal) - investimentsTotal - expensesTotal;
 
   return {
+    balance,
     depositsTotal,
     investimentsTotal,
     expensesTotal,
-    balance,
   };
 };

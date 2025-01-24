@@ -45,6 +45,8 @@ import { DatePicker } from "./ui/date-picker";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { upsertTransaction } from "../_actions/add-transaction";
+import { useState } from "react";
+import { Loader2 } from "lucide-react";
 
 interface UpsertTransactionDialogProps {
   isOpen: boolean;
@@ -82,6 +84,8 @@ const UpsertTransactionDialog = ({
   defaultValues,
   transactionId,
 }: UpsertTransactionDialogProps) => {
+  const [isButtonLoading, setIsButtonLoading] = useState(false);
+
   const form = useForm<FormSchema>({
     resolver: zodResolver(formSchema),
     defaultValues: defaultValues ?? {
@@ -96,11 +100,15 @@ const UpsertTransactionDialog = ({
 
   const onSubmit = async (data: FormSchema) => {
     try {
+      setIsButtonLoading(true);
       await upsertTransaction({ ...data, id: transactionId });
       setIsOpen(false);
       form.reset();
+      setIsButtonLoading(false);
     } catch (error) {
       console.log(error);
+    } finally {
+      setIsButtonLoading(false);
     }
   };
 
@@ -271,8 +279,14 @@ const UpsertTransactionDialog = ({
                   Cancelar
                 </Button>
               </DialogClose>
-              <Button type="submit">
-                {isUpdate ? "Atualizar" : "Adicionar"}
+              <Button type="submit" disabled={isButtonLoading}>
+                {isButtonLoading ? (
+                  <Loader2 className="animate-spin" />
+                ) : isUpdate ? (
+                  "Atualizar"
+                ) : (
+                  "Adicionar"
+                )}
               </Button>
             </DialogFooter>
           </form>
