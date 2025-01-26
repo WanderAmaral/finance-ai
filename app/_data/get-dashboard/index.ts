@@ -15,6 +15,8 @@ export const getDashboard = async (month: string) => {
     },
   };
 
+  console.log(month);
+
   const depositsTotal = Number(
     (
       await db.transaction.aggregate({
@@ -23,9 +25,6 @@ export const getDashboard = async (month: string) => {
       })
     )?._sum?.amount,
   );
-
-  console.log("depositos: ", depositsTotal);
-  console.log("Onde: ", where);
 
   const investimentsTotal = Number(
     (
