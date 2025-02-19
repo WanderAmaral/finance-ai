@@ -2,17 +2,14 @@ import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 import { Card, CardContent, CardHeader } from "../_components/ui/card";
 import { CheckIcon, XIcon } from "lucide-react";
-import AcquirePlanButton from "./_components/acquire-plan-button";
+import { Button } from "../_components/ui/button";
 
 const SubscriptionPage = async () => {
   const { userId } = await auth();
 
-  console.log(userId);
-
   if (!userId) {
     redirect("/login");
   }
-
   return (
     <>
       <div className="space-y-6 p-6">
@@ -61,7 +58,7 @@ const SubscriptionPage = async () => {
                 <CheckIcon className="text-primary" />
                 <p>Relatórios de IA</p>
               </div>
-              <AcquirePlanButton />
+              <Button className="w-full rounded-full font-bold">Comprar</Button>
             </CardContent>
           </Card>
         </div>

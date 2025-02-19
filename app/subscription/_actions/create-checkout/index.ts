@@ -1,13 +1,14 @@
 "use server";
 
 import { auth } from "@clerk/nextjs/server";
+import { redirect } from "next/navigation";
 import Stripe from "stripe";
 
-export const createStripeCheckout = async () => {
+export const createCheckout = async () => {
   const { userId } = await auth();
 
   if (!userId) {
-    throw new Error("Unauthorized");
+    redirect("/login");
   }
 
   if (!process.env.STRIPE_SECRET_KEY) {
@@ -20,20 +21,20 @@ export const createStripeCheckout = async () => {
 
   const session = await stripe.checkout.sessions.create({
     payment_method_types: ["card"],
-    mode: "subscription",
-    success_url: `http://localhost:3000`,
-    cancel_url: `http://localhost:3000`,
-    subscription_data: {
-      metadata: {
-        clerk_user_id: userId,
-      },
-    },
     line_items: [
       {
         price: process.env.STRIPE_PREMIUM_PLAN_PRICE_ID,
         quantity: 1,
       },
     ],
+    mode: "subscription",
+    success_url: `http://localhost:3000`,
+    cancel_url: `${process.env.NEXT_PUBLIC_BASE_URL}/subscription/cancel`,
+    subscription_data: {
+      metadata: {
+        clerk_user_id: userId,
+      },
+    },
   });
 
   return { sessionId: session.id };
