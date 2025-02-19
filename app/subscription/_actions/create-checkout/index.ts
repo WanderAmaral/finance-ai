@@ -4,7 +4,7 @@ import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 import Stripe from "stripe";
 
-export const createCheckout = async () => {
+export const createStripeCheckout = async () => {
   const { userId } = await auth();
 
   if (!userId) {
@@ -29,7 +29,7 @@ export const createCheckout = async () => {
     ],
     mode: "subscription",
     success_url: `http://localhost:3000`,
-    cancel_url: `${process.env.NEXT_PUBLIC_BASE_URL}/subscription/cancel`,
+    cancel_url: `http://localhost:3000`,
     subscription_data: {
       metadata: {
         clerk_user_id: userId,
